@@ -1,31 +1,31 @@
 doubleMe :: (Num a) => a -> a
 doubleMe x = x * 2
 
-doubleUs :: Int -> Int -> Int
+doubleUs :: (Num a) => a -> a -> a
 doubleUs x y = doubleMe x + doubleMe y
 
-doubleSmallNumber :: Int -> Int
+doubleSmallNumber :: (Ord a, Num a) => a -> a
 doubleSmallNumber x = (if x > 100 then x else x * 2) + 1
 
-listComprehension :: [Int] -> [Int]
-listComprehension x = [x * 2 | x <- [1..10], x * 2 >= 12]
+listComprehension :: (Ord a, Num a, Enum a) => [Int]
+listComprehension = [x * 2 | x <- [1..10], x * 2 >= 12]
 
-concatenateLists :: [Int] -> [Int] -> [Int]
+concatenateLists :: [a] -> [a] -> [a]
 concatenateLists x y = x ++ y
 
-getHead :: [Int] -> Int
+getHead :: [a] -> a
 getHead x = head x
 
-getTail :: [Int] -> [Int]
+getTail :: [a] -> [a]
 getTail x = tail x
 
-getLast :: [Int] -> Int
+getLast :: [a] -> a
 getLast x = last x
 
-getInit :: [Int] -> [Int]
+getInit :: [a] -> [a]
 getInit x = init x
 
-getLength :: [Int] -> Int
+getLength :: [a] -> Int
 getLength x = length x
 
 isEmpty :: [Int] -> Bool
@@ -73,6 +73,7 @@ replicateNtimesX n x = replicate n x
 getMod7With3Remainder :: [Int]
 getMod7With3Remainder = [ x | x <- [50..100], x `mod` 7 == 3]
 
+boomBangs :: [Int] -> [String]
 boomBangs xs = [ if x < 10 then "BOOM!" else "BANG!" | x <- xs, odd x]
 
 getLength' :: [Int] -> Int
@@ -81,10 +82,17 @@ getLength' xs = sum [1 | _ <- xs]
 removeNonUppercase :: [Char] -> [Char]
 removeNonUppercase st = [ c | c <- st, c `elem` ['A'..'Z']]
 
+getTupleFirst :: (a, b) -> a
 getTupleFirst x = fst x
+
+getTupleSecond :: (a, b) -> b
 getTupleSecond x = snd x
-combineTuples x y = zip x y
-rightTriangles = [ (a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2]
+
+combineLists :: [a] -> [b] -> [(a, b)]
+combineLists x y = zip x y
+
+rightTriangles :: (Num a, Enum a, Eq a) => [(a, a, a)]
+rightTriangles = [(a, b, c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2]
 
 -- TYPECLASSES
 -- (typeclass typeVariable) => returnType
@@ -99,9 +107,9 @@ rightTriangles = [ (a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 =
 -- Floating: includes Float and Double
 
 -- PATTERN MATCHING (order does count)
-  -- recursion by pattern matching
-  factorial :: (Integral a) => a -> a  
-  factorial 0 = 1  
+-- recursion by pattern matching
+factorial :: (Integral a) => a -> a  
+factorial 0 = 1  
 factorial n = n * factorial (n - 1)
 -- catch-all pattern
 -- result of a known input (edge condition)
@@ -115,7 +123,7 @@ bmiTell weight height
   | bmi <= fat = "You're fat! Lose some weight, fatty!"
   | otherwise = "You're a whale, congratulations!"
   where bmi = weight / height ^ 2
-  (skinny, normal, fat) = (18.5, 25.0, 30.0)
+        (skinny, normal, fat) = (18.5, 25.0, 30.0)
 
 initials :: String -> String -> String  
 initials firstname lastname = [f] ++ ". " ++ [l] ++ "."
@@ -135,7 +143,7 @@ cylinder r h =
 -- LET (let <bindings> in <expression>)
 [if 5 > 3 then "Woo" else "Boo", if 'a' > 'b' then "Foo" else "Bar"]
 
-4 * (let a = 9 in a + 1) + 2
+4 * (let a = 9 in a+1) + 2
 
 [let square x = x * x in (square 5, square 3, square 2)]
 
@@ -143,8 +151,8 @@ cylinder r h =
 
 (let (a,b,c) = (1,2,3) in a+b+c) * 100
 
-calcBmis :: (RealFloat a) => [(a, a)] -> [a]
-calcBmis xs = [bmi | (w, h) <- xs, let bmi = w / h ^ 2]
+calcBmis :: (RealFloat a) => [(a,a)] -> [a]
+calcBmis xs = [bmi | (w,h) <- xs, let bmi = w / h^2]
 
 case expression of pattern -> result  
                    pattern -> result  
@@ -160,3 +168,100 @@ describeList xs = "The list is " ++ what xs
     where what [] = "empty."  
           what [x] = "a singleton list."  
           what xs = "a longer list."
+
+-- RECURSION
+maximum' :: (Ord a) => [a] -> a  
+maximum' [] = error "maximum of empty list"  
+maximum' [x] = x  
+maximum' (x:xs)   
+    | x > maxTail = x  
+    | otherwise = maxTail  
+    where maxTail = maximum' xs
+
+maximum' :: (Ord a) => [a] -> a  
+maximum' [] = error "maximum of empty list"  
+maximum' [x] = x  
+maximum' (x:xs) = max x (maximum' xs)  
+
+replicate' :: (Num a, Ord a) => a -> b -> [b]
+replicate' n x
+  | n <= 0 = []
+  | otherwise = x:replicate' (n-1) x
+
+take' :: (Num a, Ord a) => a -> [b] -> [b]
+take' n _
+  | n <= 0 = []
+take' _ [] = []
+take' n (x:xs) = x : take' (n-1) xs
+
+reverse :: [a] -> [a]
+reverse' [] = []
+reverse' (x:xs) = reverse' xs ++ [x]
+
+repeat' :: a -> [a]
+repeat' x = x:repeat' x
+
+zip' :: [a] -> [b] -> [(a,b)]
+zip' [] _ = []
+zip' _ [] = []
+zip' (x:xs) (y:ys) = (x,y):zip' xs ys
+
+elem' :: (Eq a) => a -> [a] -> Bool
+elem' _ [] = False
+elem' a (x:xs)
+  | a == x = True
+  | otherwise = a `elem'` xs
+
+quicksort :: (Ord a) => [a] -> [a]  
+quicksort [] = []  
+quicksort (x:xs) =
+  let smallerSorted = quicksort [a | a <- xs, a <= x]  
+    biggerSorted = quicksort [a | a <- xs, a > x]  
+  in smallerSorted ++ [x] ++ biggerSorted
+
+-- HIGHER ORDER FUNCTIONS
+-- function currying: "carregar" parâmetros usando partial application; 
+-- partial application: injetar parcial e progressivamente parâmetros de uma função com mais de um argumento, gerando novas funções super especializadas;
+-- partially apply infix functions with SECTIONS (surround with parentheses)
+divideByTen :: (Floating a) => a -> a  
+divideByTen = (/10)
+
+isUpperAlphanum :: Char -> Bool
+isUpperAlphanum = (`elem` ['A'..'Z'])
+
+applyTwice :: (a -> a) -> a -> a
+applyTwice f x = f (f x)
+
+zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith' _ [] _ = []
+zipWith' _ _ [] = []
+zipWith' f (x:xs) (y:ys) = f x y : zipWith' f xs ys
+
+flip' :: (a -> b -> c) -> b -> a -> c
+flip' f x y = f y x
+
+-- map, filter
+quicksort :: (Ord a) => [a] -> [a]    
+quicksort [] = []    
+quicksort (x:xs) =     
+  let smallerSorted = quicksort (filter (<=x) xs)  
+      biggerSorted = quicksort (filter (>x) xs)   
+  in  smallerSorted ++ [x] ++ biggerSorted
+
+sum (takeWhile (<10000) (filter odd (map (^2) [1..])))
+sum (takeWhile (<10000) [n^2 | n <- [1..], odd (n^2)])
+
+-- Collatz sequences
+-- We take a natural number. If that number is even, we divide it by two. If it's odd, we multiply it by 3 and then add 1 to that
+chain :: (Integral a) => a -> a
+chain 1 = [1]
+chain n
+  | even n = n:chain (n `div` 2)
+  | odd n = n:chain (n*3 + 1)
+
+numLongChains :: Int
+numLongChains = length (filter isLong (map chain [1..100]))
+  where isLong xs = length xs > 15
+
+listOfFuns = map (*) [0..]
+(listOfFuns !! 4) 5
