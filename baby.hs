@@ -265,3 +265,43 @@ numLongChains = length (filter isLong (map chain [1..100]))
 
 listOfFuns = map (*) [0..]
 (listOfFuns !! 4) 5
+
+-- Lambda functions (anonymous)
+numLongChains :: Int  
+numLongChains = length (filter (\xs -> length xs > 15) (map chain [1..100]))
+
+-- foldr, foldl (reduce)
+sum' :: (Num a) => [a] -> a  
+sum' xs = foldl (\acc x -> acc + x) 0 xs 
+
+sum' :: (Num a) => [a] -> a
+sum' = foldl (+) 0
+
+map' :: (a -> b) -> [a] -> [b]
+map' f xs = foldr (\x acc -> f x : acc) [] xs
+-- use right folds when we're building up new lists from a list
+
+-- foldl1, foldr1 use the first element as starting point
+
+-- scanr, scanr1, scanl, scanl1: analogus to folds, but returns a list with all accumulator states
+
+-- low precedence (right-associative) function application ($): avoid parentheses
+sum $ map sqrt [1..130]
+sum $ filter (> 10) $ map (*2) [2..10]
+
+-- function composition (create new functions on-the-fly
+(.) :: (b -> c) -> (a -> b) -> a -> c
+f . g = \x -> f (g x)
+
+-- point free / pointless style: operate only by using curried functions
+-- from: sum' xs = foldl (+) 0 xs
+-- to:   sum'    = foldl (+) 0
+-- don't overuse function composition in complex/long functions, use let or split into sub-functions instead
+oddSquareSum :: Integer  
+oddSquareSum = sum . takeWhile (<10000) . filter odd . map (^2) $ [1..]
+
+oddSquareSum :: Integer
+oddSquareSum =
+    let oddSquares = filter odd $ map (^2) [1..]
+        belowLimit = takeWhile (<10000) oddSquares
+    in  sum belowLimit
