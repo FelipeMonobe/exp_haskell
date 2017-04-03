@@ -304,4 +304,342 @@ oddSquareSum :: Integer
 oddSquareSum =
     let oddSquares = filter odd $ map (^2) [1..]
         belowLimit = takeWhile (<10000) oddSquares
-    in  sum belowLimit
+    in  sum belowLimt
+
+-- MODULES
+-- each module contains functions and types
+-- Prelude module (default)
+-- import <module name>
+import Data.List
+import Data.List (nub, sort)
+import Data.List hiding (nub)
+import qualified Data.Map
+import qualified Data.Map as M
+
+---------------
+-- Data.List --
+---------------
+
+-- intersperse
+intersperse '.' "MONKEY"    -- "M.O.N.K.E.Y"
+intersperse 0 [1,2,3,4,5,6] -- [1,0,2,0,3,0,4,0,5,0,6]
+
+-- intercalate
+intercalate " " ["hey","there","guys"]        -- "hey there guys"
+intercalate [0,0,0] [[1,2,3],[4,5,6],[7,8,9]] -- [1,2,3,0,0,0,4,5,6,0,0,0,7,8,9]
+
+-- transpose
+transpose [[1,2,3],[4,5,6],[7,8,9]] -- [[1,4,7],[2,5,8],[3,6,9]]
+transpose ["hey","there","guys"]    -- ["htg","ehu","yey","rs","e"]
+
+-- map
+-- filter
+-- concat
+-- foldl, foldr, foldl1, foldr1 (lazy)
+-- foldl', foldr', foldl1', foldr1' (strict)
+concat ["foo","bar","car"]       -- "foobarcar"
+concat [[3,4,5],[2,3,4],[2,1,1]] -- [3,4,5,2,3,4,2,1,1]
+
+-- concatMap (map + concat)
+-- and
+and $ map (>4) [5,6,7,8]    -- True
+and $ map (==4) [4,4,4,3,4] -- False
+
+-- or
+or $ map (==4) [2,3,4,5,6,1] -- True
+or $ map (>4) [1,2,3]        -- False
+
+-- any
+any (==4) [2,3,5,6,1,4]                  -- True
+any (`elem` ['A'..'Z']) "HEYGUYSwhatsup" -- True
+
+-- all
+all (>4) [6,9,10]                        -- True
+all (`elem` ['A'..'Z']) "HEYGUYSwhatsup" -- False
+
+-- iterate
+take 10 $ iterate (*2) 1             -- [1,2,4,8,16,32,64,128,256,512]
+take 3  $ iterate (++ "haha") "haha" -- ["haha","hahahaha","hahahahahaha"]
+
+-- splitAt
+splitAt 3 "heyman"                       -- ("hey","man")
+splitAt 100 "heyman"                     -- ("heyman","")
+splitAt (-3) "heyman"                    -- ("","heyman")
+let (a,b) = splitAt 3 "foobar" in b ++ a -- "barfoo"
+
+-- takeWhile
+takeWhile (>3) [6,5,4,3,2,1,2,3,4,5,4,3,2,1] -- [6,5,4]
+takeWhile (/=' ') "This is a sentence"       -- "This"
+
+-- dropWhile
+dropWhile (/=' ') "This is a sentence" -- " is a sentence"
+dropWhile (<3) [1,2,2,2,3,4,5,4,3,2,1] -- [3,4,5,4,3,2,1]
+
+-- span
+let (fw, rest) = span (/=' ') "This is a sentence" in "First word:" ++ fw ++ ", the rest:" ++ rest -- "First word: This, the rest: is a sentence"
+
+-- break (negated span)
+break (==4) [1,2,3,4,5,6,7] -- ([1,2,3],[4,5,6,7])
+
+-- sort
+sort [8,5,3,2,1,6,4,2]          -- [1,2,2,3,4,5,6,8]
+sort "This will be sorted soon" -- "    Tbdeehiillnooorssstw"
+
+-- group
+group [1,1,1,1,2,2,2,2,3,3,2,2,2,5,6,7] -- [[1,1,1,1],[2,2,2,2],[3,3],[2,2,2],[5],[6],[7]]
+
+-- inits
+inits "w00t" -- ["","w","w0","w00","w00t"]
+
+-- tails
+tails "w00t" -- ["w00t","00t","0t","t",""]
+
+-- isInfixOf
+"cat"  `isInfixOf` "im a cat burglar" -- True
+"Cat"  `isInfixOf` "im a cat burglar" -- False
+"cats" `isInfixOf` "im a cat burglar" -- False
+
+-- isPrefixOf (beginning)
+"hey" `isPrefixOf` "hey there!"    -- True
+"hey" `isPrefixOf` "oh hey there!" -- False
+
+-- isSuffixOf (end)
+"there!" `isSuffixOf` "oh hey there!" -- True
+"there!" `isSuffixOf` "oh hey there"  -- False
+
+-- elem: check if an element is inside a list
+
+-- notElem: check if an element isn't inside a list
+
+-- partition
+partition (`elem` ['A'..'Z']) "BOBsidneyMORGANeddy" -- ("BOBMORGAN","sidneyeddy")  
+partition (>3) [1,3,5,6,3,2,1,0,3,7]                -- ([5,6,7],[1,3,3,2,1,0,3])
+
+-- find
+find (>4) [1,2,3,4,5,6] -- Just 5  
+find (>9) [1,2,3,4,5,6] -- Nothing  
+
+-- elemIndex
+:t elemIndex  
+4 `elemIndex` [1,2,3,4,5,6]  -- Just 3
+10 `elemIndex` [1,2,3,4,5,6] -- Nothing
+
+-- elemIndices
+' ' `elemIndices` "Where are the spaces?" -- [5,9,13]
+
+-- findIndex: like find, but returns the index
+findIndex (==4) [5,3,2,1,6,4] -- Just 5  
+findIndex (==7) [5,3,2,1,6,4] -- Nothing
+
+-- findIndices
+findIndices (`elem` ['A'..'Z']) "Where Are The Caps?" -- [0,6,10,14]
+
+-- zip3, zip4, zip5, zip6, zip7: zip more than 2 lists
+
+-- zipWith3, zipWith4, zipWith5, zipWith6, zipWith7: zipWith more than 2 lists
+
+-- lines
+lines "first line\nsecond line\nthird line" -- ["first line","second line","third line"]
+
+-- unlines
+unlines ["first line", "second line", "third line"] -- "first line\nsecond line\nthird line\n"
+
+-- words
+words "hey these are the words in this sentence"               -- ["hey","these","are","the","words","in","this","sentence"]
+words "hey these           are    the words in this\nsentence" -- ["hey","these","are","the","words","in","this","sentence"]
+
+-- unwords
+unwords ["hey","there","mate"] -- "hey there mate"
+
+-- nub
+nub [1,2,3,4,3,2,1,2,3,4,3,2,1] -- [1,2,3,4]
+nub "Lots of words and stuff"   -- "Lots fwrdanu" 
+
+-- delete
+delete 'h' "hey there ghang!"                             -- "ey there ghang!"  
+delete 'h' . delete 'h' $ "hey there ghang!"              -- "ey tere ghang!"
+delete 'h' . delete 'h' . delete 'h' $ "hey there ghang!" -- "ey tere gang!"
+
+-- \\
+[1..10]         \\ [2,5,9] -- [1,3,4,6,7,8,10]  
+"Im a big baby" \\ "big"   -- "Im a  baby" 
+
+-- union
+"hey man" `union` "man what's up" -- "hey manwt'sup"  
+[1..7]    `union` [5..10]         -- [1,2,3,4,5,6,7,8,9,10]
+
+-- intersect
+[1..7] `intersect` [5..10] -- [5,6,7]
+
+-- insert
+insert 4 [3,5,1,2,8,2] -- [3,4,5,1,2,8,2]  
+insert 4 [1,3,4,4,1]   -- [1,3,4,4,4,1]
+
+-- genericLength, genericTake, genericDrop, genericSplitAt, genericIndex, genericReplicate: Num / Integral typeclasses version
+
+-- nubBy, deleteBy, unionBy, intersectBy, groupBy: customizable equality by passing a function
+
+-- sortBy, insertBy, maximumBy, minimumBy: customizable ordering by passing a function
+
+---------------
+-- Data.Char --
+---------------
+
+-- isControl: checks whether a character is a control character.
+-- isSpace: checks whether a character is a white-space characters. That includes spaces, tab characters, newlines, etc.
+-- isLower: checks whether a character is lower-cased.
+-- isUpper: checks whether a character is upper-cased.
+-- isAlpha: checks whether a character is a letter.
+-- isAlphaNum: checks whether a character is a letter or a number.
+-- isPrint: checks whether a character is printable. Control characters, for instance, are not printable.
+-- isDigit: checks whether a character is a digit.
+-- isOctDigit: checks whether a character is an octal digit.
+-- isHexDigit: checks whether a character is a hex digit.
+-- isLetter: checks whether a character is a letter.
+-- isMark: checks for Unicode mark characters. Those are characters that combine with preceding letters to form latters with accents. Use this if you are French.
+-- isNumber: checks whether a character is numeric.
+-- isPunctuation: checks whether a character is punctuation.
+-- isSymbol: checks whether a character is a fancy mathematical or currency symbol.
+-- isSeparator: checks for Unicode spaces and separators.
+-- isAscii: checks whether a character falls into the first 128 characters of the Unicode character set.
+-- isLatin1: checks whether a character falls into the first 256 characters of Unicode.
+-- isAsciiUpper: checks whether a character is ASCII and upper-case.
+-- isAsciiLower:checks whether a character is ASCII and lower-case.
+
+-- generalCategory
+generalCategory ' '             -- Space
+generalCategory 'A'             -- UppercaseLetter
+generalCategory 'a'             -- LowercaseLetter
+generalCategory '.'             -- OtherPunctuation
+generalCategory '9'             -- DecimalNumber
+map generalCategory " \t\nA9?|" -- [Space,Control,Control,UppercaseLetter,DecimalNumber,OtherPunctuation,MathSymbol]
+
+-- toUpper: converts a character to upper-case. Spaces, numbers, and the like remain unchanged.
+-- toLower: converts a character to lower-case.
+-- toTitle: converts a character to title-case. For most characters, title-case is the same as upper-case.
+-- digitToInt: converts a character to an Int. To succeed, the character must be in the ranges '0'..'9', 'a'..'f' or 'A'..'F'.
+-- intToDigit is the inverse function of digitToInt. It takes an Int in the range of 0..15 and converts it to a lower-case character.
+
+-- ord
+ord 'a' -- 97  
+
+--chr
+chr 97 -- 'a'
+
+--------------
+-- Data.Map --
+--------------
+
+-- key-value pair data structure
+
+-- fromList
+Map.fromList [("betty","555-2938"),("bonnie","452-2928"),("lucille","205-2928")] -- fromList [("betty","555-2938"),("bonnie","452-2928"),("lucille","205-2928")]  
+Map.fromList [(1,2),(3,4),(3,2),(5,5)]                                           -- fromList [(1,2),(3,2),(5,5)]
+
+-- empty
+Map.empty -- fromList []
+
+-- insert
+Map.insert 3 100 Map.empty -- fromList [(3,100)]
+
+-- null
+Map.null Map.empty                    -- True
+Map.null $ Map.fromList [(2,3),(5,5)] -- False
+
+-- size
+Map.size Map.empty                                      -- 0  
+Map.size $ Map.fromList [(2,4),(3,3),(4,2),(5,4),(6,4)] -- 5  
+
+-- singleton
+Map.singleton 3 9                  -- fromList [(3,9)]  
+Map.insert 5 9 $ Map.singleton 3 9 -- fromList [(3,9),(5,9)]  
+
+-- lookup: works like the Data.List lookup, only it operates on maps. It returns Just something if it finds something for the key and Nothing if it doesn't.
+
+-- member
+Map.member 3 $ Map.fromList [(3,6),(4,3),(6,9)] -- True  
+Map.member 3 $ Map.fromList [(2,5),(4,5)]       -- False 
+
+-- map & filter: just like in Lists, but operate only on map values, not keys
+
+-- toList: inverse or fromList
+
+-- keys: returns the list of keys of a map
+
+-- elems: returns the list of values of a map
+
+-- fromListWith: like fromList, but if a duplicate key is found, the function we pass is used to combine the values of those keys into some other value.
+Map.fromListWith max [(2,3),(2,5),(2,100),(3,29),(3,22),(3,11),(4,22),(4,15)] -- fromList [(2,100),(3,29),(4,22)]
+
+-- insertWith: like fromListWith, but for insert operations.
+
+--------------
+-- Data.Set --
+--------------
+
+-- naturally ordered, unique elements
+-- faster than list nub to remove duplicates of big lists (but nub requires only Eq typeclass elements, Sets also require Ord)
+
+-- fromList
+-- intersection
+-- difference
+-- union
+-- null
+-- size
+-- member
+-- empty
+-- singleton
+-- insert
+-- delete
+-- map
+-- filter
+
+----------------------
+-- Creating Modules --
+----------------------
+
+-- Sphere.hs
+module Geometry.Sphere
+( sphereVolume  
+, sphereArea
+) where  
+  
+sphereVolume :: Float -> Float  
+sphereVolume radius = (4.0 / 3.0) * pi * (radius ^ 3)  
+  
+sphereArea :: Float -> Float  
+sphereArea radius = 4 * pi * (radius ^ 2) 
+
+---------------------------
+-- Making new Data types --
+---------------------------
+
+-- data <type> = <value constructor> | <value constructor> | ...
+data Bool = False | True
+data Int = -2147483648 | -2147483647 | ... | -1 | 0 | 1 | 2 | ... | 2147483647
+
+module Shapes   
+( Point(..)
+, Shape(..)
+, surface
+) where 
+
+data Point = Float Float deiriving (Show)
+data Shape = Circle Point Float | Rectangle Point Point deriving (Show)
+surface :: Shape -> Float
+surface (Circle _ r) = pi * r ^ 2
+surface (Rectangle (Point x1 y1) (Point x2 y2)) = (abs $ x2 - x1) * (abs $ y2 - y1)
+map (Circle 10 20) [4,5,6,6] -- [Circle 10.0 20.0 4.0,Circle 10.0 20.0 5.0,Circle 10.0 20.0 6.0,Circle 10.0 20.0 6.0]
+
+-- Record syntax: automatically creates field lookup functions, also prints types differently
+data Person = Person { firstName :: String
+                     , lastName :: String
+                     , age :: Int
+                     , height :: Float
+                     , phoneNumber :: String
+                     , flavor :: String
+                     } deriving (Show)
+
+let Me = { firstname = "Felipe", lastname = "Monobe", age = 26, height = 1.70, phoneNumber = "99316-8064", flavor = "vanilla" }
+lastName Me -- "Monobe"
+Me { firstname = "Felipe", lastname = "Monobe", age = 26, height = 1.70, phoneNumber = "99316-8064", flavor = "vanilla" }
